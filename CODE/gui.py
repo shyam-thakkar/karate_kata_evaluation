@@ -1,4 +1,5 @@
 import tkinter as tk
+import math
 from tkinter import filedialog
 from PIL import Image, ImageTk
 import cv2
@@ -131,12 +132,12 @@ def process_video_file(video_path):
     predefined_sequence = ['L_L_GB', 'L_R_S', 'R_R_GB', 'R_L_S', 'F_L_GB', 'F_R_S', 'F_L_S', 'F_R_S', 'R_L_GB',
                            'R_R_S', 'L_R_GB', 'L_L_S', 'B_L_GB', 'B_R_S', 'B_L_S', 'B_R_S', 'L_L_GB', 'L_R_S',
                            'R_R_GB', 'R_L_S']
-    for i in range(0, 20):
-        most_frequent = max(set(chunks[i]), key=chunks[i].count)
-        final_user.append(most_frequent)
-        if predefined_sequence[i] == most_frequent:
-            grade += 1
-    return grade / 2  # Return the calculated grade
+    for i in range(0,20):
+       grade_count= chunks[i].count(predefined_sequence[i])
+       grade_count=grade_count/20
+       grade=grade+grade_count
+    print(math.ceil(grade/2)) # Return the calculated grade
+    return(math.ceil(grade/2)) # Return the calculated grade
 
 # GUI class
 class PoseClassifierGUI:

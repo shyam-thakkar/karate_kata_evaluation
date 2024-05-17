@@ -126,11 +126,10 @@ def process_video_file(video_path):
     grade=0
     predefined_sequence = ['L_L_GB', 'L_R_S', 'R_R_GB', 'R_L_S','F_L_GB','F_R_S','F_L_S','F_R_S','R_L_GB','R_R_S','L_R_GB','L_L_S','B_L_GB','B_R_S','B_L_S','B_R_S','L_L_GB','L_R_S','R_R_GB','R_L_S'] 
     for i in range(0,20):
-        most_frequent = max(set(chunks[i]), key=chunks[i].count)
-        final_user.append(most_frequent)
-        if predefined_sequence[i]==most_frequent:
-            grade+=1    
-    print(grade/2)
+       grade_count= chunks[i].count(predefined_sequence[i])
+       grade_count=grade_count/len(chunks[i])
+       grade=grade+grade_count
+    print(ceil(grade/2))
 def upload_button_click(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
         video_path = select_video_file()
