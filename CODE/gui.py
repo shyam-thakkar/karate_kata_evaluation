@@ -86,8 +86,8 @@ def process_frame(frame, prev_keypoints):
         most_frequent_prediction = max(set(prediction_queue), key=prediction_queue.count)
         predictionsss.append(most_frequent_prediction)
         # Draw predicted class on the top left corner
-        cv2.putText(processed_frame, f"Predicted Pose Class: {most_frequent_prediction}", (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+        cv2.putText(processed_frame, f"Predicted Pose Class: {most_frequent_prediction}", (20, 40),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1.25, (0, 0, 0), 4)
 
     return processed_frame, most_frequent_prediction
 
