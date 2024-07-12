@@ -1,0 +1,10 @@
+streamlit
+opencv-python-headless  # Or the compatible version you tested
+numpy==1.24.3
+tensorflow==2.13.1
+tensorflow-hub
+pandas
+matplotlib
+seaborn
+scikit-learn
+opencv-contrib-python==4.10.0.82
