@@ -116,6 +116,18 @@ st.title('Pose Classification and Grading')
 uploaded_file = st.file_uploader("Upload a video file", type=["mp4", "avi", "mov"])
 demo_button = st.button("Use Demo Video")
 
+def delete_previous_files():
+    for folder in [UPLOAD_FOLDER, PROCESSED_FOLDER]:
+        for file in os.listdir(folder):
+            file_path = os.path.join(folder, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                
+                
+if uploaded_file is not None or demo_button:
+    delete_previous_files()
+    
+    
 if uploaded_file is not None:
     file_path = os.path.join(UPLOAD_FOLDER, uploaded_file.name)
     with open(file_path, 'wb') as f:
