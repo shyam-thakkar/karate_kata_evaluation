@@ -118,6 +118,14 @@ if uploaded_file is not None:
     convert_to_mp4(temp_processed_video_path, final_output_path)
 
     st.write(f"Grade: {grade}")
+
+    if os.path.exists(final_output_path):
+        with open(final_output_path, "rb") as file:
+            mp4_bytes = file.read()
+            st.video(mp4_bytes)
+    else:
+        st.error("Failed to convert video to MP4 format.")
+
 elif demo_button:
     demo_temp_output_path = os.path.join(PROCESSED_FOLDER, "temp_demo_video.avi")
     demo_final_output_path = os.path.join(PROCESSED_FOLDER, "processed_demo_video.mp4")
@@ -126,9 +134,10 @@ elif demo_button:
     convert_to_mp4(demo_temp_processed_video_path, demo_final_output_path)
 
     st.write(f"Grade: {grade}")
-    if os.path.exists(final_output_path):
-        with open(final_output_path, "rb") as file:
+
+    if os.path.exists(demo_final_output_path):
+        with open(demo_final_output_path, "rb") as file:
             mp4_bytes = file.read()
             st.video(mp4_bytes)
     else:
-        st.error("Failed to convert video to MP4 format.")
+        st.error("Failed to convert demo video to MP4 format.")
