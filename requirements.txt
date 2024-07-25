@@ -1,10 +1,13 @@
 streamlit
-opencv-python-headless  # Or the compatible version you tested
-numpy==1.24.3
-tensorflow==2.13.1
-tensorflow-hub
 pandas
-matplotlib
-seaborn
-scikit-learn
 opencv-contrib-python==4.10.0.82
+ffmpeg-python
+streamlit==1.36.0
+opencv-python-headless==4.8.1.78
+tensorflow==2.17.0
+tensorflow-hub==0.16.1
+numpy==1.24.3
+moviepy==1.0.3
+st-video-player==0.0.8
+keras==3.4.1
+

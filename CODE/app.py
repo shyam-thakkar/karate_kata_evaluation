@@ -1,4 +1,3 @@
-import streamlit as st
 import os
 import cv2
 import numpy as np
@@ -7,14 +6,16 @@ import tensorflow_hub as hub
 from tensorflow.keras.models import load_model
 from collections import deque
 import math
-
-# Setup the directories for upload and processed files
-UPLOAD_FOLDER = 'uploads'
-PROCESSED_FOLDER = 'processed'
-
+from io import BytesIO
+from tempfile import NamedTemporaryFile
+from moviepy.editor import VideoClip
+import streamlit as st
+from st_video_player import st_video_player
+# Setup the directories for upload
+UPLOAD_FOLDER = './uploads'
+PROCESSED_FOLDER = './processed'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-
 if not os.path.exists(PROCESSED_FOLDER):
     os.makedirs(PROCESSED_FOLDER)
 
@@ -23,11 +24,11 @@ model = hub.load("https://tfhub.dev/google/movenet/singlepose/thunder/4")
 movenet = model.signatures['serving_default']
 
 # Load the trained pose classification model
-pose_model_path = "../pose_class"
+pose_model_path = "C:/miniproject/pose_class/posemodel.keras"  # Update this path to point to the .h5 file
 pose_model = load_model(pose_model_path)
 
 # Load label encoder classes
-label_encoder_classes_path = "../pose_class/label_encoder_classes.npy"
+label_encoder_classes_path = "C:/miniproject/pose_class/label_encoder_classes.npy"
 label_encoder_classes = np.load(label_encoder_classes_path, allow_pickle=True)
 
 # Initialize a deque to store the last 15 predicted values
@@ -64,14 +65,14 @@ def create_chunks(lst):
     chunks = [lst[i:i + int(chunk_size)] for i in range(0, len(lst), int(chunk_size))]
     return chunks
 
-def process_video_file(video_path, output_path):
+def process_video_file(video_path, temp_output_path):
     video_capture = cv2.VideoCapture(video_path)
     frame_width = int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(video_capture.get(cv2.CAP_PROP_FPS))
 
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+    fourcc = cv2.VideoWriter_fourcc(*"XVID")
+    out = cv2.VideoWriter(temp_output_path, fourcc, fps, (frame_width, frame_height))
 
     while True:
         ret, frame = video_capture.read()
@@ -93,7 +94,11 @@ def process_video_file(video_path, output_path):
         grade_count = grade_count / 20
         grade += grade_count
     grade = math.ceil(grade / 2)
-    return grade, output_path
+    return grade, temp_output_path
+
+def convert_to_mp4(input_path, output_path):
+    command = f'ffmpeg -i "{input_path}" -vcodec libx264 -crf 23 "{output_path}"'
+    os.system(command)
 
 st.title('Pose Classification and Grading')
 
@@ -104,11 +109,17 @@ if uploaded_file is not None:
     with open(file_path, 'wb') as f:
         f.write(uploaded_file.getbuffer())
 
-    output_path = os.path.join("processed", f"processed_{uploaded_file.name}")
-    grade, processed_video_path = process_video_file(file_path, output_path)
-    print(processed_video_path)
+    temp_output_path = os.path.join(PROCESSED_FOLDER, f"temp_{os.path.basename(file_path)}.avi")
+    final_output_path = os.path.join(PROCESSED_FOLDER, f"processed_{os.path.basename(file_path)}.mp4")
+
+    grade, temp_processed_video_path = process_video_file(file_path, temp_output_path)
+    convert_to_mp4(temp_processed_video_path, final_output_path)
+
     st.write(f"Grade: {grade}")
-    
-    with open(processed_video_path, 'rb') as video_file:
-        video_bytes = video_file.read()
-        st.video(video_bytes, format='video/mp4')
+
+    if os.path.exists(final_output_path):
+        with open(final_output_path, "rb") as file:
+            mp4_bytes = file.read()
+            st_video_player(mp4_bytes, height=600, width=600)
+    else:
+        st.error("Failed to convert video to MP4 format.")
