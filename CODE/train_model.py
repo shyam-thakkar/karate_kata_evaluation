@@ -66,7 +66,7 @@ test_loss, test_accuracy = model.evaluate(X_test, y_test)
 print(f"Test Accuracy: {test_accuracy * 100:.2f}%")
 
 
-model.save("C:/miniproject/pose_class")
+model.save("C:/miniproject/pose_class/posemodel.keras")
 
 import numpy as np
 
