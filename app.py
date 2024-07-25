@@ -15,18 +15,28 @@ from st_video_player import st_video_player
 UPLOAD_FOLDER = './uploads'
 PROCESSED_FOLDER = './processed'
 DEMO_VIDEO_PATH = './demo_videos/demo_video_1.mp4'
+pose_model_path = "./pose_class/posemodel.keras" 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 if not os.path.exists(PROCESSED_FOLDER):
     os.makedirs(PROCESSED_FOLDER)
-
+@st.cache
+def load_model_movenet():
+    model = hub.load("https://tfhub.dev/google/movenet/singlepose/thunder/4")
+    moveneta = model.signatures['serving_default']
+    return moveneta
+movenet= load_model_movenet()
 # Load the MoveNet model from TensorFlow Hub
-model = hub.load("https://tfhub.dev/google/movenet/singlepose/thunder/4")
-movenet = model.signatures['serving_default']
+@st.cache
+def load_model_pose():
+    pose_modela = load_model(pose_model_path)
+    return pose_modela
+movenet= load_model_movenet()
+pose_model=load_model_pose()
 
 # Load the trained pose classification model
-pose_model_path = "./pose_class/posemodel.keras"  # Update this path to point to the .h5 file
-pose_model = load_model(pose_model_path)
+ # Update this path to point to the .h5 file
+
 
 # Load label encoder classes
 label_encoder_classes_path = "./pose_class/label_encoder_classes.npy"
