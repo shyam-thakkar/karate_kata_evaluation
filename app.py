@@ -24,11 +24,11 @@ model = hub.load("https://tfhub.dev/google/movenet/singlepose/thunder/4")
 movenet = model.signatures['serving_default']
 
 # Load the trained pose classification model
-pose_model_path = "C:/miniproject/pose_class/posemodel.keras"  # Update this path to point to the .h5 file
+pose_model_path = "./pose_class/posemodel.keras"  # Update this path to point to the .h5 file
 pose_model = load_model(pose_model_path)
 
 # Load label encoder classes
-label_encoder_classes_path = "C:/miniproject/pose_class/label_encoder_classes.npy"
+label_encoder_classes_path = "./pose_class/label_encoder_classes.npy"
 label_encoder_classes = np.load(label_encoder_classes_path, allow_pickle=True)
 
 # Initialize a deque to store the last 15 predicted values
