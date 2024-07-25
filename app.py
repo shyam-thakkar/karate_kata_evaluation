@@ -20,14 +20,14 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 if not os.path.exists(PROCESSED_FOLDER):
     os.makedirs(PROCESSED_FOLDER)
-@st.cache
+@st.cache_resource
 def load_model_movenet():
     model = hub.load("https://tfhub.dev/google/movenet/singlepose/thunder/4")
     moveneta = model.signatures['serving_default']
     return moveneta
 movenet= load_model_movenet()
 # Load the MoveNet model from TensorFlow Hub
-@st.cache
+@st.cache_resource
 def load_model_pose():
     pose_modela = load_model(pose_model_path)
     return pose_modela
