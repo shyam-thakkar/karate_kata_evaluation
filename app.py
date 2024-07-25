@@ -97,7 +97,7 @@ def process_video_file(video_path, temp_output_path):
     return grade, temp_output_path
 
 def convert_to_mp4(input_path, output_path):
-    command = f'ffmpeg -i "{input_path}" -vcodec libx264 -crf 23 "{output_path}"'
+    command = f'ffmpeg -i -y "{input_path}" -vcodec libx264 -crf 23 "{output_path}"'
     os.system(command)
 
 st.title('Pose Classification and Grading')
