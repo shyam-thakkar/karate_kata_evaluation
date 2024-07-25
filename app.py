@@ -120,6 +120,6 @@ if uploaded_file is not None:
     if os.path.exists(final_output_path):
         with open(final_output_path, "rb") as file:
             mp4_bytes = file.read()
-            st_video_player(mp4_bytes, height=600, width=600)
+            st.video(mp4_bytes)
     else:
         st.error("Failed to convert video to MP4 format.")
