@@ -111,7 +111,7 @@ def convert_to_mp4(input_path, output_path):
     command = f'ffmpeg -y -i  "{input_path}" -vcodec libx264 -crf 23 "{output_path}"'
     os.system(command)
 
-st.title('Pose Classification and Grading')
+st.title('Karate Kata Evaluaiton🥋')
 
 uploaded_file = st.file_uploader("Upload a video file", type=["mp4", "avi", "mov"])
 demo_button = st.button("Use Demo Video")
