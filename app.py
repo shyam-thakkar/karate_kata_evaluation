@@ -118,7 +118,6 @@ demo_button = st.button("Use Demo Video")
 files = os.listdir(DEMO_VIDEO_PATH)
 
 # Create a dropdown list of files
-selected_file = st.selectbox('Choose a Demo Video:', files)
 def delete_previous_files():
     for folder in [UPLOAD_FOLDER, PROCESSED_FOLDER]:
         for file in os.listdir(folder):
@@ -152,6 +151,7 @@ if uploaded_file is not None:
         st.error("Failed to convert video to MP4 format.")
 
 elif demo_button:
+    selected_file = st.selectbox('Choose a Demo Video:', files)
     demo_temp_output_path = os.path.join(PROCESSED_FOLDER, "temp_demo_video.avi")
     demo_final_output_path = os.path.join(PROCESSED_FOLDER, "processed_demo_video.mp4")
     file_path = os.path.join(DEMO_VIDEO_PATH, selected_file)
