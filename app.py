@@ -6,37 +6,33 @@ import tensorflow_hub as hub
 from tensorflow.keras.models import load_model
 from collections import deque
 import math
-from io import BytesIO
-from tempfile import NamedTemporaryFile
-from moviepy.editor import VideoClip
 import streamlit as st
-from st_video_player import st_video_player
+
 # Setup the directories for upload
 UPLOAD_FOLDER = './uploads'
 PROCESSED_FOLDER = './processed'
 DEMO_VIDEO_PATH = './demo_videos'
-pose_model_path = "./pose_class/posemodel.keras" 
+pose_model_path = "./pose_class/posemodel.keras"
+
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 if not os.path.exists(PROCESSED_FOLDER):
     os.makedirs(PROCESSED_FOLDER)
+
 @st.cache_resource
 def load_model_movenet():
     model = hub.load("https://tfhub.dev/google/movenet/singlepose/thunder/4")
     moveneta = model.signatures['serving_default']
     return moveneta
-movenet= load_model_movenet()
-# Load the MoveNet model from TensorFlow Hub
+
+movenet = load_model_movenet()
+
 @st.cache_resource
 def load_model_pose():
     pose_modela = load_model(pose_model_path)
     return pose_modela
-movenet= load_model_movenet()
-pose_model=load_model_pose()
 
-# Load the trained pose classification model
- # Update this path to point to the .h5 file
-
+pose_model = load_model_pose()
 
 # Load label encoder classes
 label_encoder_classes_path = "./pose_class/label_encoder_classes.npy"
@@ -111,26 +107,30 @@ def convert_to_mp4(input_path, output_path):
     command = f'ffmpeg -y -i  "{input_path}" -vcodec libx264 -crf 23 "{output_path}"'
     os.system(command)
 
-st.title('Karate Kata Evaluaiton🥋')
+st.title('Karate Kata Evaluation🥋')
 
 uploaded_file = st.file_uploader("Upload a video file", type=["mp4", "avi", "mov"])
 demo_button = st.button("Use Demo Video")
-files = os.listdir(DEMO_VIDEO_PATH)
-files.insert(0, 'Select a file...')
-# Create a dropdown list of files
+
+# Function to delete previous files
 def delete_previous_files():
     for folder in [UPLOAD_FOLDER, PROCESSED_FOLDER]:
         for file in os.listdir(folder):
             file_path = os.path.join(folder, file)
             if os.path.isfile(file_path):
                 os.remove(file_path)
-                
-                
-if uploaded_file is not None or demo_button:
-    delete_previous_files()
-    
-    
+
+# State to keep track of whether the demo button has been clicked
+if 'demo_button_clicked' not in st.session_state:
+    st.session_state.demo_button_clicked = False
+
+# Check if the demo button was clicked
+if demo_button:
+    st.session_state.demo_button_clicked = True
+
+# Processing the uploaded file
 if uploaded_file is not None:
+    delete_previous_files()
     file_path = os.path.join(UPLOAD_FOLDER, uploaded_file.name)
     with open(file_path, 'wb') as f:
         f.write(uploaded_file.getbuffer())
@@ -150,9 +150,17 @@ if uploaded_file is not None:
     else:
         st.error("Failed to convert video to MP4 format.")
 
-elif demo_button:
-    if selected_file != 'Select a file...':
-        selected_file = st.selectbox('Choose a Demo Video:', files)
+# Display the selectbox if the demo button has been clicked
+if st.session_state.demo_button_clicked:
+    # List files in demo videos folder and add a default option
+    files = os.listdir(DEMO_VIDEO_PATH)
+    files.insert(0, 'Select a file...')
+
+    selected_file = st.selectbox('Choose a Demo Video:', files)
+    
+    # Processing the demo video file
+    if selected_file != "Select a file...":
+        delete_previous_files()
         demo_temp_output_path = os.path.join(PROCESSED_FOLDER, "temp_demo_video.avi")
         demo_final_output_path = os.path.join(PROCESSED_FOLDER, "processed_demo_video.mp4")
         file_path = os.path.join(DEMO_VIDEO_PATH, selected_file)
@@ -164,6 +172,6 @@ elif demo_button:
         if os.path.exists(demo_final_output_path):
             with open(demo_final_output_path, "rb") as file:
                 mp4_bytes = file.read()
-                st.video(mp4_bytes) 
+                st.video(mp4_bytes)
         else:
-                st.error("Failed to convert demo video to MP4 format.")
+            st.error("Failed to convert demo video to MP4 format.")
