@@ -114,7 +114,7 @@ def convert_to_mp4(input_path, output_path):
 st.title('Karate Kata Evaluaiton🥋')
 
 uploaded_file = st.file_uploader("Upload a video file", type=["mp4", "avi", "mov"])
-# demo_button = st.button("Use Demo Video")
+demo_button = st.button("Use Demo Video")
 files = os.listdir(DEMO_VIDEO_PATH)
 
 # Create a dropdown list of files
