@@ -114,8 +114,11 @@ def convert_to_mp4(input_path, output_path):
 st.title('Karate Kata Evaluaiton🥋')
 
 uploaded_file = st.file_uploader("Upload a video file", type=["mp4", "avi", "mov"])
-demo_button = st.button("Use Demo Video")
+# demo_button = st.button("Use Demo Video")
+files = os.listdir(DEMO_VIDEO_PATH)
 
+# Create a dropdown list of files
+selected_file = st.selectbox('Choose a Demo Video:', files)
 def delete_previous_files():
     for folder in [UPLOAD_FOLDER, PROCESSED_FOLDER]:
         for file in os.listdir(folder):
@@ -151,8 +154,8 @@ if uploaded_file is not None:
 elif demo_button:
     demo_temp_output_path = os.path.join(PROCESSED_FOLDER, "temp_demo_video.avi")
     demo_final_output_path = os.path.join(PROCESSED_FOLDER, "processed_demo_video.mp4")
-
-    grade, demo_temp_processed_video_path = process_video_file(DEMO_VIDEO_PATH, demo_temp_output_path)
+    file_path = os.path.join(DEMO_VIDEO_PATH, selected_file)
+    grade, demo_temp_processed_video_path = process_video_file(file_path, demo_temp_output_path)
     convert_to_mp4(demo_temp_processed_video_path, demo_final_output_path)
 
     st.write(f"Grade: {grade}")
