@@ -14,7 +14,7 @@ from st_video_player import st_video_player
 # Setup the directories for upload
 UPLOAD_FOLDER = './uploads'
 PROCESSED_FOLDER = './processed'
-DEMO_VIDEO_PATH = './demo_videos/demo_video_1.mp4'
+DEMO_VIDEO_PATH = './demo_videos'
 pose_model_path = "./pose_class/posemodel.keras" 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
